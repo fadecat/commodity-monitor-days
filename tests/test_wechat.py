@@ -38,6 +38,16 @@ class TestWechat(unittest.TestCase):
         self.assertIn("🟢 **B**", chunks[1])
         self.assertIn("> 历史分位", chunks[1])
 
+    def test_split_message_respects_utf8_byte_limit(self) -> None:
+        block = (
+            "🔴 **测试品种**: **12345** | 创[y1]高位\n"
+            "> 历史分位: 21d(88%) | 63d(92%) | 1y(96%) | 3y(99%)"
+        )
+        text = "\n\n".join([block] * 8)
+        chunks = split_message(text, max_chars=2000, max_bytes=220)
+        self.assertGreater(len(chunks), 1)
+        self.assertTrue(all(len(c.encode("utf-8")) <= 220 for c in chunks))
+
 
 if __name__ == "__main__":
     unittest.main()
