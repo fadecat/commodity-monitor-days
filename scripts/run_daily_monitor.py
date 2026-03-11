@@ -17,7 +17,7 @@ if str(SRC) not in sys.path:
 
 from commodity_monitor.config import MonitorConfig, SymbolConfig, load_config, load_symbols
 from commodity_monitor.core import SymbolResult, evaluate_symbol, run_scan
-from commodity_monitor.reporting import build_report
+from commodity_monitor.reporting import build_report_v1, build_report_v2_markdown
 from commodity_monitor.wechat import send_in_chunks
 
 
@@ -103,6 +103,12 @@ def parse_args() -> argparse.Namespace:
         action="store_true",
         help="Print planned symbol list in check-only mode",
     )
+    parser.add_argument(
+        "--report-version",
+        choices=["v1", "v2"],
+        default="v2",
+        help="Report rendering version, v2 is markdown-optimized for WeChat",
+    )
     return parser.parse_args()
 
 
@@ -172,6 +178,7 @@ def _print_plan(cfg: MonitorConfig, args: argparse.Namespace, plan: SymbolPlan) 
     total = len(plan.core_symbols) + len(plan.extra_symbols)
     print("=== Monitor Plan ===")
     print(f"profile={args.profile}")
+    print(f"report_version={args.report_version}")
     print(f"core_symbols={len(plan.core_symbols)}")
     print(f"extra_symbols={len(plan.extra_symbols)}")
     print(f"total_symbols={total}")
@@ -202,6 +209,14 @@ def _print_plan(cfg: MonitorConfig, args: argparse.Namespace, plan: SymbolPlan) 
             print("\n[extra symbols]")
             for item in plan.extra_symbols:
                 print(f"- {item.name} ({item.code}/{item.market}) enabled={item.enabled}")
+
+
+def _safe_print(text: str) -> None:
+    try:
+        print(text)
+    except UnicodeEncodeError:
+        encoding = sys.stdout.encoding or "utf-8"
+        sys.stdout.buffer.write((text + "\n").encode(encoding, errors="replace"))
 
 
 def _scan_extended_with_degrade(
@@ -295,18 +310,25 @@ def main() -> int:
         return 0
 
     results, meta = _run_scan_by_profile(cfg, args, plan)
-    report, summary = build_report(
-        results,
-        cfg,
-        mode_label=meta.mode_label,
-        degrade_reason=meta.degrade_reason,
-        elapsed_seconds=meta.elapsed_seconds,
-        core_planned=meta.core_planned,
-        extra_planned=meta.extra_planned,
-        core_scanned=meta.core_scanned,
-        extra_scanned=meta.extra_scanned,
-    )
-    print(report)
+    if args.report_version == "v1":
+        report, summary = build_report_v1(
+            results,
+            cfg,
+            mode_label=meta.mode_label,
+            degrade_reason=meta.degrade_reason,
+            elapsed_seconds=meta.elapsed_seconds,
+            core_planned=meta.core_planned,
+            extra_planned=meta.extra_planned,
+            core_scanned=meta.core_scanned,
+            extra_scanned=meta.extra_scanned,
+        )
+    else:
+        report, summary = build_report_v2_markdown(
+            results=results,
+            cfg=cfg,
+            stale_days_threshold=5,
+        )
+    _safe_print(report)
 
     webhook = os.getenv(cfg.wechat.webhook_env, "").strip()
     should_send = summary.alert_symbols > 0 or cfg.wechat.send_when_no_alert

@@ -5,38 +5,69 @@ from typing import Iterable
 import requests
 
 
+def _split_paragraphs(text: str) -> list[str]:
+    parts = text.split("\n\n")
+    return [part for part in parts if part]
+
+
+def _split_oversize_paragraph(paragraph: str, max_chars: int) -> list[str]:
+    """
+    Fallback for rare oversize paragraph.
+    Keep line boundaries where possible; hard-cut only if one line itself is too long.
+    """
+    out: list[str] = []
+    current = ""
+    for line in paragraph.splitlines():
+        candidate = line if not current else f"{current}\n{line}"
+        if len(candidate) <= max_chars:
+            current = candidate
+            continue
+
+        if current:
+            out.append(current)
+            current = ""
+
+        if len(line) <= max_chars:
+            current = line
+            continue
+
+        # Last resort: hard split an oversized single line.
+        for idx in range(0, len(line), max_chars):
+            out.append(line[idx : idx + max_chars])
+
+    if current:
+        out.append(current)
+    return out
+
+
 def split_message(text: str, max_chars: int) -> list[str]:
     if max_chars <= 20:
         raise ValueError("max_chars must be > 20")
     if len(text) <= max_chars:
         return [text]
 
+    paragraphs = _split_paragraphs(text)
     chunks: list[str] = []
-    current: list[str] = []
-    current_len = 0
+    current = ""
 
-    for line in text.splitlines(keepends=True):
-        line_len = len(line)
-        if line_len > max_chars:
+    for para in paragraphs:
+        if len(para) > max_chars:
+            # Flush previous block first, then split this oversize paragraph.
             if current:
-                chunks.append("".join(current))
-                current = []
-                current_len = 0
-            for idx in range(0, line_len, max_chars):
-                chunks.append(line[idx : idx + max_chars])
+                chunks.append(current)
+                current = ""
+            chunks.extend(_split_oversize_paragraph(para, max_chars=max_chars))
             continue
 
-        if current_len + line_len > max_chars:
-            chunks.append("".join(current))
-            current = [line]
-            current_len = line_len
-            continue
-
-        current.append(line)
-        current_len += line_len
+        candidate = para if not current else f"{current}\n\n{para}"
+        if len(candidate) <= max_chars:
+            current = candidate
+        else:
+            chunks.append(current)
+            current = para
 
     if current:
-        chunks.append("".join(current))
+        chunks.append(current)
 
     return chunks
 

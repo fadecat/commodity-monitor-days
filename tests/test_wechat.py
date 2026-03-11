@@ -24,6 +24,20 @@ class TestWechat(unittest.TestCase):
         chunks = split_message(text, max_chars=100)
         self.assertEqual(chunks, [text])
 
+    def test_split_message_keeps_symbol_block_integrity(self) -> None:
+        text = (
+            "🔴 **A**: **1** | 创[y1]高位\n"
+            "> 历史分位: 21d(90%) | 63d(91%) | 1y(95%) | 3y(88%)\n\n"
+            "🟢 **B**: **2** | 创[y1]低位\n"
+            "> 历史分位: 21d(20%) | 63d(25%) | 1y(10%) | 3y(40%)"
+        )
+        chunks = split_message(text, max_chars=90)
+        self.assertEqual(len(chunks), 2)
+        self.assertIn("🔴 **A**", chunks[0])
+        self.assertIn("> 历史分位", chunks[0])
+        self.assertIn("🟢 **B**", chunks[1])
+        self.assertIn("> 历史分位", chunks[1])
+
 
 if __name__ == "__main__":
     unittest.main()
