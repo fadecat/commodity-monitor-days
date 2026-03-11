@@ -16,7 +16,7 @@ y3 = 756
 
 [wechat]
 webhook_env = "WECHAT_WEBHOOK_URL"
-max_message_chars = 3300
+max_message_chars = 2048
 send_when_no_alert = false
 
 [degrade]
