@@ -1,0 +1,272 @@
+[scan]
+delay_min_seconds = 2.0
+delay_max_seconds = 4.0
+max_stale_days = 10
+skip_if_no_today_data = true
+
+[thresholds]
+high_percentile = 85
+low_percentile = 30
+
+[windows]
+d21 = 21
+d63 = 63
+y1 = 252
+y3 = 756
+
+[wechat]
+webhook_env = "WECHAT_WEBHOOK_URL"
+max_message_chars = 3300
+send_when_no_alert = false
+
+[degrade]
+enabled = true
+max_run_seconds = 240
+max_fail_ratio = 0.25
+min_samples = 20
+
+[[symbols]]
+code = "CL"
+name = "NYMEX原油"
+market = "foreign"
+[[symbols]]
+code = "NG"
+name = "NYMEX天然气"
+market = "foreign"
+[[symbols]]
+code = "OIL"
+name = "布伦特原油"
+market = "foreign"
+[[symbols]]
+code = "GC"
+name = "COMEX黄金"
+market = "foreign"
+[[symbols]]
+code = "SI"
+name = "COMEX白银"
+market = "foreign"
+[[symbols]]
+code = "HG"
+name = "COMEX铜"
+market = "foreign"
+[[symbols]]
+code = "AHD"
+name = "LME铝"
+market = "foreign"
+[[symbols]]
+code = "CAD"
+name = "LME铜"
+market = "foreign"
+[[symbols]]
+code = "NID"
+name = "LME镍"
+market = "foreign"
+[[symbols]]
+code = "PBD"
+name = "LME铅"
+market = "foreign"
+[[symbols]]
+code = "SND"
+name = "LME锡"
+market = "foreign"
+[[symbols]]
+code = "ZSD"
+name = "LME锌"
+market = "foreign"
+[[symbols]]
+code = "C"
+name = "CBOT玉米"
+market = "foreign"
+[[symbols]]
+code = "S"
+name = "CBOT大豆"
+market = "foreign"
+[[symbols]]
+code = "W"
+name = "CBOT小麦"
+market = "foreign"
+[[symbols]]
+code = "BO"
+name = "CBOT豆油"
+market = "foreign"
+[[symbols]]
+code = "SM"
+name = "CBOT豆粕"
+market = "foreign"
+[[symbols]]
+code = "CT"
+name = "ICE棉花"
+market = "foreign"
+[[symbols]]
+code = "FCPO"
+name = "马棕榈油"
+market = "foreign"
+[[symbols]]
+code = "RSS3"
+name = "TOCOM橡胶"
+market = "foreign"
+
+[[symbols]]
+code = "SC0"
+name = "原油主连"
+market = "domestic"
+[[symbols]]
+code = "FU0"
+name = "燃油主连"
+market = "domestic"
+[[symbols]]
+code = "BU0"
+name = "沥青主连"
+market = "domestic"
+[[symbols]]
+code = "LU0"
+name = "低硫燃料油主连"
+market = "domestic"
+[[symbols]]
+code = "PG0"
+name = "液化石油气主连"
+market = "domestic"
+[[symbols]]
+code = "ZC0"
+name = "动力煤主连"
+market = "domestic"
+[[symbols]]
+code = "JM0"
+name = "焦煤主连"
+market = "domestic"
+[[symbols]]
+code = "J0"
+name = "焦炭主连"
+market = "domestic"
+[[symbols]]
+code = "I0"
+name = "铁矿石主连"
+market = "domestic"
+[[symbols]]
+code = "RB0"
+name = "螺纹钢主连"
+market = "domestic"
+[[symbols]]
+code = "HC0"
+name = "热卷主连"
+market = "domestic"
+[[symbols]]
+code = "CU0"
+name = "沪铜主连"
+market = "domestic"
+[[symbols]]
+code = "AL0"
+name = "沪铝主连"
+market = "domestic"
+[[symbols]]
+code = "ZN0"
+name = "沪锌主连"
+market = "domestic"
+[[symbols]]
+code = "NI0"
+name = "沪镍主连"
+market = "domestic"
+[[symbols]]
+code = "SN0"
+name = "沪锡主连"
+market = "domestic"
+[[symbols]]
+code = "PB0"
+name = "沪铅主连"
+market = "domestic"
+[[symbols]]
+code = "AU0"
+name = "沪金主连"
+market = "domestic"
+[[symbols]]
+code = "AG0"
+name = "沪银主连"
+market = "domestic"
+[[symbols]]
+code = "AO0"
+name = "氧化铝主连"
+market = "domestic"
+[[symbols]]
+code = "SI0"
+name = "工业硅主连"
+market = "domestic"
+[[symbols]]
+code = "LC0"
+name = "碳酸锂主连"
+market = "domestic"
+[[symbols]]
+code = "M0"
+name = "豆粕主连"
+market = "domestic"
+[[symbols]]
+code = "Y0"
+name = "豆油主连"
+market = "domestic"
+[[symbols]]
+code = "P0"
+name = "棕榈油主连"
+market = "domestic"
+[[symbols]]
+code = "RM0"
+name = "菜粕主连"
+market = "domestic"
+[[symbols]]
+code = "OI0"
+name = "菜油主连"
+market = "domestic"
+[[symbols]]
+code = "C0"
+name = "玉米主连"
+market = "domestic"
+[[symbols]]
+code = "A0"
+name = "豆一主连"
+market = "domestic"
+[[symbols]]
+code = "SR0"
+name = "白糖主连"
+market = "domestic"
+[[symbols]]
+code = "CF0"
+name = "棉花主连"
+market = "domestic"
+[[symbols]]
+code = "TA0"
+name = "PTA主连"
+market = "domestic"
+[[symbols]]
+code = "MA0"
+name = "甲醇主连"
+market = "domestic"
+[[symbols]]
+code = "EG0"
+name = "乙二醇主连"
+market = "domestic"
+[[symbols]]
+code = "SA0"
+name = "纯碱主连"
+market = "domestic"
+[[symbols]]
+code = "UR0"
+name = "尿素主连"
+market = "domestic"
+[[symbols]]
+code = "AP0"
+name = "苹果主连"
+market = "domestic"
+[[symbols]]
+code = "PK0"
+name = "花生主连"
+market = "domestic"
+[[symbols]]
+code = "L0"
+name = "聚乙烯主连"
+market = "domestic"
+[[symbols]]
+code = "PP0"
+name = "聚丙烯主连"
+market = "domestic"
+[[symbols]]
+code = "V0"
+name = "PVC主连"
+market = "domestic"

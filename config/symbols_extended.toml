@@ -1,0 +1,193 @@
+# Additional symbols for extended profile.
+# Default profile keeps core-only to prioritize speed and stability.
+
+[[symbols]]
+code = "FEF"
+name = "新加坡铁矿石"
+market = "foreign"
+[[symbols]]
+code = "LHC"
+name = "CME瘦肉猪"
+market = "foreign"
+[[symbols]]
+code = "RS"
+name = "ICE原糖"
+market = "foreign"
+[[symbols]]
+code = "XAU"
+name = "伦敦金"
+market = "foreign"
+[[symbols]]
+code = "XAG"
+name = "伦敦银"
+market = "foreign"
+[[symbols]]
+code = "XPT"
+name = "伦敦铂金"
+market = "foreign"
+[[symbols]]
+code = "XPD"
+name = "伦敦钯金"
+market = "foreign"
+[[symbols]]
+code = "TRB"
+name = "RBOB汽油"
+market = "foreign"
+enabled = false
+
+# Optional non-commodity contracts, keep disabled by default.
+[[symbols]]
+code = "BTC"
+name = "CME比特币期货"
+market = "foreign"
+enabled = false
+[[symbols]]
+code = "EUA"
+name = "欧洲碳排放"
+market = "foreign"
+enabled = false
+
+[[symbols]]
+code = "AD0"
+name = "AD0主连"
+market = "domestic"
+[[symbols]]
+code = "B0"
+name = "豆二主连"
+market = "domestic"
+[[symbols]]
+code = "BB0"
+name = "胶合板主连"
+market = "domestic"
+[[symbols]]
+code = "BC0"
+name = "国际铜主连"
+market = "domestic"
+[[symbols]]
+code = "BR0"
+name = "丁二烯橡胶主连"
+market = "domestic"
+[[symbols]]
+code = "BZ0"
+name = "BZ0主连"
+market = "domestic"
+[[symbols]]
+code = "CJ0"
+name = "红枣主连"
+market = "domestic"
+[[symbols]]
+code = "CS0"
+name = "玉米淀粉主连"
+market = "domestic"
+[[symbols]]
+code = "CY0"
+name = "棉纱主连"
+market = "domestic"
+[[symbols]]
+code = "EB0"
+name = "苯乙烯主连"
+market = "domestic"
+[[symbols]]
+code = "EC0"
+name = "集运指数主连"
+market = "domestic"
+[[symbols]]
+code = "FB0"
+name = "纤维板主连"
+market = "domestic"
+[[symbols]]
+code = "FG0"
+name = "玻璃主连"
+market = "domestic"
+[[symbols]]
+code = "JD0"
+name = "鸡蛋主连"
+market = "domestic"
+[[symbols]]
+code = "JR0"
+name = "粳稻主连"
+market = "domestic"
+[[symbols]]
+code = "LG0"
+name = "原木主连"
+market = "domestic"
+[[symbols]]
+code = "LH0"
+name = "生猪主连"
+market = "domestic"
+[[symbols]]
+code = "NR0"
+name = "20号胶主连"
+market = "domestic"
+[[symbols]]
+code = "OP0"
+name = "OP0主连"
+market = "domestic"
+[[symbols]]
+code = "PD0"
+name = "PD0主连"
+market = "domestic"
+[[symbols]]
+code = "PF0"
+name = "短纤主连"
+market = "domestic"
+[[symbols]]
+code = "PL0"
+name = "瓶片主连"
+market = "domestic"
+[[symbols]]
+code = "PR0"
+name = "PR0主连"
+market = "domestic"
+[[symbols]]
+code = "PS0"
+name = "PS0主连"
+market = "domestic"
+[[symbols]]
+code = "PT0"
+name = "PT0主连"
+market = "domestic"
+[[symbols]]
+code = "PX0"
+name = "对二甲苯主连"
+market = "domestic"
+[[symbols]]
+code = "RR0"
+name = "粳米主连"
+market = "domestic"
+[[symbols]]
+code = "RS0"
+name = "油菜籽主连"
+market = "domestic"
+[[symbols]]
+code = "RU0"
+name = "沪胶主连"
+market = "domestic"
+[[symbols]]
+code = "SF0"
+name = "硅铁主连"
+market = "domestic"
+[[symbols]]
+code = "SH0"
+name = "烧碱主连"
+market = "domestic"
+[[symbols]]
+code = "SM0"
+name = "锰硅主连"
+market = "domestic"
+[[symbols]]
+code = "SP0"
+name = "纸浆主连"
+market = "domestic"
+[[symbols]]
+code = "SS0"
+name = "不锈钢主连"
+market = "domestic"
+[[symbols]]
+code = "WH0"
+name = "强麦主连"
+market = "domestic"
+[[symbols]]
+code = "WR0"
+name = "线材主连"
+market = "domestic"
