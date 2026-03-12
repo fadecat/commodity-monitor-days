@@ -23,7 +23,7 @@ send_when_no_alert = false
 
 [degrade]
 enabled = true
-max_run_seconds = 240
+max_run_seconds = 480
 max_fail_ratio = 0.25
 min_samples = 20
 
