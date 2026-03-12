@@ -24,13 +24,20 @@ class TestCore(unittest.TestCase):
         windows = {"d21": 21, "d63": 63}
         result = compute_window_percentiles(series, windows, min_points=20)
         self.assertEqual(result["d21"], 100.0)
-        self.assertEqual(result["d63"], 100.0)
+        self.assertIsNone(result["d63"])
 
     def test_compute_window_percentiles_insufficient_data(self) -> None:
         series = pd.Series([1, 2, 3, 4, 5])
         windows = {"d21": 21}
         result = compute_window_percentiles(series, windows, min_points=20)
         self.assertIsNone(result["d21"])
+
+    def test_compute_window_percentiles_requires_full_window(self) -> None:
+        series = pd.Series(range(1, 757))
+        windows = {"y3": 756, "y5": 1260}
+        result = compute_window_percentiles(series, windows, min_points=20)
+        self.assertEqual(result["y3"], 100.0)
+        self.assertIsNone(result["y5"])
 
 
 if __name__ == "__main__":

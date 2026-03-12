@@ -53,6 +53,18 @@ def _pct_hit_style(value: float | None, is_hit: bool) -> str:
     return base
 
 
+def _window_display_label(label: str) -> str:
+    mapping = {
+        "d21": "21d",
+        "d63": "63d",
+        "y1": "1y",
+        "y3": "3y",
+        "y5": "5y",
+        "y10": "10y",
+    }
+    return mapping.get(label, label)
+
+
 def _normalize_code_root(code: str) -> str:
     code_up = code.upper()
     root = re.sub(r"\d+$", "", code_up)
@@ -154,7 +166,7 @@ def _is_stale(result: SymbolResult, stale_days_threshold: int) -> bool:
 
 def _is_resonance(
     result: SymbolResult,
-    expected_windows: tuple[str, str, str, str] = ("d21", "d63", "y1", "y3"),
+    expected_windows: tuple[str, ...] = ("d21", "d63", "y1", "y3"),
     high_cutoff: float = 95.0,
     low_cutoff: float = 5.0,
 ) -> tuple[bool, str | None]:
@@ -170,7 +182,7 @@ def _is_resonance(
     return False, None
 
 
-def _build_alert_line_v2(result: SymbolResult) -> tuple[str, str]:
+def _build_alert_line_v2(result: SymbolResult, window_order: list[str]) -> tuple[str, str]:
     assert result.latest_price is not None
     assert result.window_percentiles is not None
     assert result.latest_date is not None
@@ -192,18 +204,19 @@ def _build_alert_line_v2(result: SymbolResult) -> tuple[str, str]:
         trend_desc = "无告警"
 
     pct = result.window_percentiles
-    p21 = _pct_hit_style(pct.get("d21"), "d21" in highs or "d21" in lows)
-    p63 = _pct_hit_style(pct.get("d63"), "d63" in highs or "d63" in lows)
-    py1 = _pct_hit_style(pct.get("y1"), "y1" in highs or "y1" in lows)
-    py3 = _pct_hit_style(pct.get("y3"), "y3" in highs or "y3" in lows)
+    parts = [
+        (
+            f"{_window_display_label(label)}("
+            f"{_pct_hit_style(pct.get(label), label in highs or label in lows)})"
+        )
+        for label in window_order
+    ]
 
     title_line = (
         f"{emoji} **{result.symbol.name}({result.symbol.code})**: "
         f"**{_fmt_price(result.latest_price)}** | {trend_desc}"
     )
-    detail_line = (
-        f"> 历史分位: 21d({p21}) | 63d({p63}) | 1y({py1}) | 3y({py3})"
-    )
+    detail_line = f"> 历史分位: {' | '.join(parts)}"
     return title_line, detail_line
 
 
@@ -321,6 +334,8 @@ def build_report_v2_markdown(
     stale_days_threshold: int = 5,
 ) -> tuple[str, ReportSummary]:
     today_cn = datetime.now(ZoneInfo("Asia/Shanghai")).date().isoformat()
+    window_order = list(cfg.windows.keys())
+    resonance_windows = tuple(window_order)
 
     success_items = [r for r in results if r.error is None]
     failed_items = [r for r in results if r.error is not None]
@@ -333,7 +348,7 @@ def build_report_v2_markdown(
     resonance_items: list[tuple[SymbolResult, str]] = []
     normal_items: list[SymbolResult] = []
     for item in alert_items:
-        is_res, direction = _is_resonance(item)
+        is_res, direction = _is_resonance(item, expected_windows=resonance_windows)
         if is_res and direction is not None:
             resonance_items.append((item, direction))
         else:
@@ -373,7 +388,7 @@ def build_report_v2_markdown(
         for item, direction in resonance_items:
             assert item.latest_price is not None
             emoji = "🔴" if direction == "high" else "🟢"
-            blast = "四周期极值共振！"
+            blast = f"{len(resonance_windows)}周期极值共振！"
             lines.append(
                 f"{emoji} **{item.symbol.name}({item.symbol.code})**: "
                 f"**{_fmt_price(item.latest_price)}** | {blast}"
@@ -397,7 +412,7 @@ def build_report_v2_markdown(
         has_any_section = True
         lines.append(f"{icon} **【{sec}】**")
         for item in items:
-            title_line, detail_line = _build_alert_line_v2(item)
+            title_line, detail_line = _build_alert_line_v2(item, window_order)
             lines.append(title_line)
             lines.append(detail_line)
             lines.append("")

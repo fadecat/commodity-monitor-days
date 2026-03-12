@@ -36,6 +36,9 @@ def compute_window_percentiles(
 ) -> dict[str, float | None]:
     percentiles: dict[str, float | None] = {}
     for label, days in windows.items():
+        if len(close_series) < days:
+            percentiles[label] = None
+            continue
         window = close_series.tail(days)
         if len(window) < min_points:
             percentiles[label] = None
@@ -121,4 +124,3 @@ def run_scan(cfg: MonitorConfig, max_symbols: int | None = None) -> list[SymbolR
             time.sleep(pause)
         results.append(evaluate_symbol(symbol, cfg))
     return results
-

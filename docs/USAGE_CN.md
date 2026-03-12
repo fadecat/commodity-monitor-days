@@ -7,9 +7,12 @@
 ## 2. 目录说明
 
 - `scripts/run_daily_monitor.py`: 主入口，支持 `core/extended` 与自动降级。
+- `audit_history_windows.py`: 历史长度审计脚本，输出 5 年/10 年覆盖度结果。
 - `config/monitor.toml`: 核心配置（阈值、窗口、延时、降级、精选池）。
 - `config/symbols_extended.toml`: 扩展池配置（仅 `--profile extended` 生效）。
 - `.github/workflows/daily-monitor.yml`: GitHub Actions 定时运行配置。
+- `docs/HISTORY_WINDOW_ANALYSIS_CN.md`: 历史窗口可行性分析与落地建议。
+- `reports/history_window_rollout_plan.md`: 基于最新审计结果生成的上线建议清单。
 
 ## 3. 上手流程
 
@@ -19,6 +22,7 @@ python -m venv .venv
 pip install -r requirements.txt
 python scripts/run_daily_monitor.py --check-only --show-symbols
 python scripts/run_daily_monitor.py --dry-run
+python audit_history_windows.py
 ```
 
 ## 4. 运行模式
@@ -37,7 +41,8 @@ python scripts/run_daily_monitor.py --profile extended --degrade-max-run-seconds
 ## 5. 配置说明（关键项）
 
 - `[thresholds]`: `high_percentile` / `low_percentile` 告警阈值。
-- `[windows]`: 百分位窗口，默认 `d21/d63/y1/y3`。
+- `[windows]`: 百分位窗口，默认 `d21/d63/y1/y3/y5/y10`。
+- 窗口长度不足时：该窗口结果返回 `None`，不会把不足额历史误算成长期窗口。
 - `[scan]`: 抓取间隔与数据新鲜度控制。
 - `[wechat]`: webhook 环境变量名与单条消息最大长度。
 - `[degrade]`: 扩展池自动降级策略：
@@ -69,3 +74,4 @@ python scripts/run_daily_monitor.py --profile extended --degrade-max-run-seconds
 - 没有推送：检查是否无告警、无当日数据、或 webhook 未配置。
 - 告警过多：提高阈值或先用 `core`。
 - 执行时间长：降低 `max_symbols` 或使用 `core`。
+- 想评估 `y5` / `y10`：先跑 `python audit_history_windows.py`，不要直接改线上窗口。

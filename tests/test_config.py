@@ -16,6 +16,8 @@ class TestConfig(unittest.TestCase):
     def test_load_core_config(self) -> None:
         cfg = load_config(ROOT / "config" / "monitor.toml")
         self.assertGreater(len(cfg.symbols), 0)
+        self.assertIn("y5", cfg.windows)
+        self.assertIn("y10", cfg.windows)
 
     def test_with_extra_symbols_dedup(self) -> None:
         cfg = load_config(ROOT / "config" / "monitor.toml")
@@ -33,4 +35,3 @@ class TestConfig(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
-

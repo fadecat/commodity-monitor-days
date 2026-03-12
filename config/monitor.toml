@@ -13,6 +13,8 @@ d21 = 21
 d63 = 63
 y1 = 252
 y3 = 756
+y5 = 1260
+y10 = 2520
 
 [wechat]
 webhook_env = "WECHAT_WEBHOOK_URL"
