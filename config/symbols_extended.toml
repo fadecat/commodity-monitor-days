@@ -60,10 +60,6 @@ code = "BB0"
 name = "胶合板主连"
 market = "domestic"
 [[symbols]]
-code = "BC0"
-name = "国际铜主连"
-market = "domestic"
-[[symbols]]
 code = "BR0"
 name = "丁二烯橡胶主连"
 market = "domestic"
@@ -76,32 +72,12 @@ code = "CJ0"
 name = "红枣主连"
 market = "domestic"
 [[symbols]]
-code = "CS0"
-name = "玉米淀粉主连"
-market = "domestic"
-[[symbols]]
 code = "CY0"
 name = "棉纱主连"
 market = "domestic"
 [[symbols]]
-code = "EB0"
-name = "苯乙烯主连"
-market = "domestic"
-[[symbols]]
-code = "EC0"
-name = "集运指数主连"
-market = "domestic"
-[[symbols]]
 code = "FB0"
 name = "纤维板主连"
-market = "domestic"
-[[symbols]]
-code = "FG0"
-name = "玻璃主连"
-market = "domestic"
-[[symbols]]
-code = "JD0"
-name = "鸡蛋主连"
 market = "domestic"
 [[symbols]]
 code = "JR0"
@@ -112,24 +88,12 @@ code = "LG0"
 name = "原木主连"
 market = "domestic"
 [[symbols]]
-code = "LH0"
-name = "生猪主连"
-market = "domestic"
-[[symbols]]
-code = "NR0"
-name = "20号胶主连"
-market = "domestic"
-[[symbols]]
 code = "OP0"
 name = "OP0主连"
 market = "domestic"
 [[symbols]]
 code = "PD0"
 name = "PD0主连"
-market = "domestic"
-[[symbols]]
-code = "PF0"
-name = "短纤主连"
 market = "domestic"
 [[symbols]]
 code = "PL0"
@@ -160,28 +124,8 @@ code = "RS0"
 name = "油菜籽主连"
 market = "domestic"
 [[symbols]]
-code = "RU0"
-name = "沪胶主连"
-market = "domestic"
-[[symbols]]
-code = "SF0"
-name = "硅铁主连"
-market = "domestic"
-[[symbols]]
 code = "SH0"
 name = "烧碱主连"
-market = "domestic"
-[[symbols]]
-code = "SM0"
-name = "锰硅主连"
-market = "domestic"
-[[symbols]]
-code = "SP0"
-name = "纸浆主连"
-market = "domestic"
-[[symbols]]
-code = "SS0"
-name = "不锈钢主连"
 market = "domestic"
 [[symbols]]
 code = "WH0"

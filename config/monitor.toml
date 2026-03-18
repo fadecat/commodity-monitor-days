@@ -272,3 +272,59 @@ market = "domestic"
 code = "V0"
 name = "PVC主连"
 market = "domestic"
+[[symbols]]
+code = "LH0"
+name = "生猪主连"
+market = "domestic"
+[[symbols]]
+code = "JD0"
+name = "鸡蛋主连"
+market = "domestic"
+[[symbols]]
+code = "FG0"
+name = "玻璃主连"
+market = "domestic"
+[[symbols]]
+code = "RU0"
+name = "沪胶主连"
+market = "domestic"
+[[symbols]]
+code = "SS0"
+name = "不锈钢主连"
+market = "domestic"
+[[symbols]]
+code = "EB0"
+name = "苯乙烯主连"
+market = "domestic"
+[[symbols]]
+code = "SP0"
+name = "纸浆主连"
+market = "domestic"
+[[symbols]]
+code = "EC0"
+name = "集运指数主连"
+market = "domestic"
+[[symbols]]
+code = "NR0"
+name = "20号胶主连"
+market = "domestic"
+[[symbols]]
+code = "BC0"
+name = "国际铜主连"
+market = "domestic"
+[[symbols]]
+code = "CS0"
+name = "玉米淀粉主连"
+market = "domestic"
+[[symbols]]
+code = "PF0"
+name = "短纤主连"
+market = "domestic"
+[[symbols]]
+code = "SF0"
+name = "硅铁主连"
+market = "domestic"
+[[symbols]]
+code = "SM0"
+name = "锰硅主连"
+market = "domestic"
