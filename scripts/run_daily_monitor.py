@@ -6,7 +6,7 @@ import random
 import sys
 import time
 from dataclasses import dataclass, replace
-from datetime import datetime
+from datetime import date, datetime
 from pathlib import Path
 from zoneinfo import ZoneInfo
 
@@ -17,7 +17,12 @@ if str(SRC) not in sys.path:
 
 from commodity_monitor.config import MonitorConfig, SymbolConfig, load_config, load_symbols
 from commodity_monitor.core import SymbolResult, evaluate_symbol, run_scan
-from commodity_monitor.reporting import build_report_v1, build_report_v2_markdown
+from commodity_monitor.email_notifier import send_email
+from commodity_monitor.reporting import (
+    build_email_html,
+    build_report_v1,
+    build_report_v2_markdown,
+)
 from commodity_monitor.wechat import send_in_chunks
 
 
@@ -347,6 +352,8 @@ def main() -> int:
         print("\nNo alert symbols, skip webhook push by config")
         return 0
 
+    _try_send_email(results, cfg, today_cn)
+
     if not webhook:
         print(
             f"\nMissing webhook env `{cfg.wechat.webhook_env}` while push is required",
@@ -361,6 +368,16 @@ def main() -> int:
         sent += 1
     print(f"\nWeChat push succeeded, chunks={sent}")
     return 0
+
+
+def _try_send_email(
+    results: list[SymbolResult], cfg: MonitorConfig, today_cn: date
+) -> None:
+    try:
+        html_parts, _ = build_email_html(results=results, cfg=cfg)
+        send_email(f"商品极值监控日报 {today_cn.isoformat()}", html_parts)
+    except Exception as exc:  # noqa: BLE001
+        print(f"邮件推送失败: {exc}", file=sys.stderr)
 
 
 if __name__ == "__main__":

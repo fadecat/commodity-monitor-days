@@ -46,6 +46,9 @@ jobs:
       - name: Run monitor
         env:
           WECHAT_WEBHOOK_URL: ${{ secrets.WECHAT_WEBHOOK_URL }}
+          SMTP_USER: ${{ secrets.SMTP_USER }}
+          SMTP_PASS: ${{ secrets.SMTP_PASS }}
+          RECEIVER_EMAIL: ${{ secrets.RECEIVER_EMAIL }}
           MONITOR_PROFILE: ${{ github.event_name == 'workflow_dispatch' && inputs.profile || 'core' }}
           MONITOR_DRY_RUN: ${{ github.event_name == 'workflow_dispatch' && inputs.dry_run || 'false' }}
           MONITOR_MAX_SYMBOLS: ${{ github.event_name == 'workflow_dispatch' && inputs.max_symbols || '' }}

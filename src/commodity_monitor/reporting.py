@@ -447,3 +447,146 @@ def build_report(
     # v2 is default for webhook and local report output; keep v1 callable via build_report_v1.
     _ = (mode_label, degrade_reason, elapsed_seconds, core_planned, extra_planned, core_scanned, extra_scanned)
     return build_report_v2_markdown(results=results, cfg=cfg, stale_days_threshold=5)
+
+
+# 邮件用: 列名更直观的中文映射
+_EMAIL_WINDOW_LABEL_CN = {
+    "d21": "21日",
+    "d63": "63日",
+    "y1": "1年",
+    "y3": "3年",
+    "y5": "5年",
+    "y10": "10年",
+}
+
+
+def _email_window_label(label: str) -> str:
+    return _EMAIL_WINDOW_LABEL_CN.get(label, label)
+
+
+def _email_trend_cell(result: SymbolResult) -> tuple[str, str]:
+    highs = result.high_windows or []
+    lows = result.low_windows or []
+    highs_cn = [_email_window_label(w) for w in highs]
+    lows_cn = [_email_window_label(w) for w in lows]
+    if highs and not lows:
+        return "🔴", f"高位[{', '.join(highs_cn)}]"
+    if lows and not highs:
+        return "🟢", f"低位[{', '.join(lows_cn)}]"
+    if highs and lows:
+        return "🔴", f"高位[{', '.join(highs_cn)}] / 低位[{', '.join(lows_cn)}]"
+    return "⚪", "无告警"
+
+
+def _email_pct_cell(value: float | None, hit_direction: str | None) -> str:
+    if value is None:
+        return '<span style="color:#888">NA</span>'
+    text = f"{value:.0f}%"
+    if hit_direction == "high":
+        return f'<b><span style="color:#D93026">{text}</span></b>'
+    if hit_direction == "low":
+        return f'<b><span style="color:#1AAD19">{text}</span></b>'
+    return text
+
+
+def _email_row_spec(result: SymbolResult, window_order: list[str]) -> dict:
+    highs = set(result.high_windows or [])
+    lows = set(result.low_windows or [])
+    emoji, trend = _email_trend_cell(result)
+    pct = result.window_percentiles or {}
+    price_text = _fmt_price(result.latest_price) if result.latest_price is not None else "--"
+    cells = [
+        emoji,
+        str(result.symbol.name),
+        str(result.symbol.code),
+        price_text,
+        trend,
+    ]
+    for label in window_order:
+        direction = "high" if label in highs else "low" if label in lows else None
+        cells.append(_email_pct_cell(pct.get(label), direction))
+    return {"cells": cells}
+
+
+def build_email_html(
+    results: list[SymbolResult],
+    cfg: MonitorConfig,
+    stale_days_threshold: int = 5,
+) -> tuple[list[str], ReportSummary]:
+    from .email_notifier import render_markdown, render_table
+
+    today_cn = datetime.now(ZoneInfo("Asia/Shanghai")).date().isoformat()
+    window_order = list(cfg.windows.keys())
+
+    success_items = [r for r in results if r.error is None]
+    failed_items = [r for r in results if r.error is not None]
+    stale_items = [r for r in success_items if _is_stale(r, stale_days_threshold)]
+    alert_raw = [r for r in success_items if (r.high_windows or r.low_windows)]
+    alert_items = [r for r in alert_raw if not _is_stale(r, stale_days_threshold)]
+
+    grouped: dict[str, list[SymbolResult]] = {
+        "能源与化工": [],
+        "黑色建材": [],
+        "有色贵金属": [],
+        "农产品": [],
+        "其他": [],
+    }
+    for item in alert_items:
+        grouped[_section_name_for_symbol(item)].append(item)
+
+    high_alerts = sum(1 for r in alert_items if r.high_windows)
+    low_alerts = sum(1 for r in alert_items if r.low_windows)
+    summary = ReportSummary(
+        scanned=len(results),
+        success=len(success_items),
+        failed=len(failed_items),
+        high_alerts=high_alerts,
+        low_alerts=low_alerts,
+        alert_symbols=len(alert_items),
+        stale_symbols=len(stale_items),
+    )
+
+    headers = ["状态", "品种", "代码", "最新价", "告警"] + [
+        _email_window_label(w) for w in window_order
+    ]
+
+    html_parts: list[str] = [
+        render_markdown(
+            f"**商品极值监控日报** ({today_cn})\n"
+            f"> 监控规则: 高位区 >= {cfg.thresholds.high_percentile:.0f}%, "
+            f"低位区 <= {cfg.thresholds.low_percentile:.0f}%"
+        )
+    ]
+
+    section_order = [
+        ("能源与化工", "🛢"),
+        ("黑色建材", "🏗"),
+        ("有色贵金属", "👑"),
+        ("农产品", "🌾"),
+        ("其他", "🧩"),
+    ]
+    has_any = False
+    for sec, icon in section_order:
+        items = grouped[sec]
+        if not items:
+            continue
+        has_any = True
+        html_parts.append(render_markdown(f"{icon} **【{sec}】**"))
+        html_parts.append(render_table(
+            headers,
+            [_email_row_spec(item, window_order) for item in items],
+        ))
+
+    if not has_any:
+        html_parts.append(render_markdown("✅ 本次无有效告警。"))
+
+    html_parts.append(render_markdown(
+        '<font color="comment">'
+        f"系统信息: 扫描完成({summary.scanned}个品种), "
+        f"有效告警{summary.alert_symbols}个, 高位{summary.high_alerts}个, "
+        f"低位{summary.low_alerts}个, 剔除过期数据{summary.stale_symbols}个, "
+        f"抓取失败{summary.failed}个。"
+        "</font>"
+    ))
+
+    return html_parts, summary
